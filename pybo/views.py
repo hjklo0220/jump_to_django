@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.utils import timezone
@@ -8,21 +9,30 @@ from pybo.models import Question, Answer
 
 
 # Create your views here.
-# def index(request):
-# 	question_list = Question.objects.order_by('-create_date')
-# 	context = {'question_list': question_list}
-# 	return render(request, 'pybo/question_list.html', context)
+def index(request):
+	question_list = Question.objects.order_by('-create_date')
+	# http://localhost:8000/pybo/?page=1 디폴트 1
+	page = request.GET.get('page', '1')  # 페이지
+	paginator = Paginator(question_list, 10)  # 페이지당 10개씩
+	page_obj = paginator.get_page(page)
+	page_end_number = 0
+	for end in paginator.page_range:
+		page_end_number += 1
+	context = {'question_list': page_obj, 'page_end_number': page_end_number,}
+	return render(request, 'pybo/question_list.html', context)
 
-class IndexView(ListView):
-	# template_name = question_list.html # 디폴트: 모델명_list.html
-	def get_queryset(self):
-		return Question.objects.order_by('-create_date')
+
+# class IndexView(ListView):
+# 	# template_name = question_list.html # 디폴트: 모델명_list.html
+# 	def get_queryset(self):
+# 		return Question.objects.order_by('-create_date')
 
 
 def detail(request, question_id):
 	question = get_object_or_404(Question, pk=question_id)
 	context = {'question': question}
 	return render(request, 'pybo/question_detail.html', context)
+
 
 # class DetailView(DetailView):
 # 	model = Question
@@ -61,6 +71,3 @@ def question_create(request):
 	context = {'form': form}
 	# {'form': form} 은 탬플릿에서 질문 등록시 사용할 폼 엘리먼트를 생성할 때 쓰임
 	return render(request, 'pybo/question_form.html', context)
-
-
-
