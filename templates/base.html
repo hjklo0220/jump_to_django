@@ -17,13 +17,17 @@
 </head>
 <body>
 
-{% include 'navbor.html' %}
+{% include 'navbar.html' %}
 
 {% block content %}
 {% endblock content %}
 
 
 <script src="{% static 'bootstrap.min.js' %}"></script>
+<!-- 자바 스크립트 추가 블럭 -->
+{% block script %}
+{% endblock script %}
+
 </body>
 </html>
 
