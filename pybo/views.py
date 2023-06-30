@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -39,6 +40,7 @@ def detail(request, question_id):
 # 	# template_name = question_detail.html 디폴트: 모델명_detail.html
 
 # 답변 등록 로직
+@login_required(login_url='common:login')
 def answer_create(request, question_id):
 	question = get_object_or_404(Question, pk=question_id)
 	# question.answer_set.create(content=request.POST.get('content'), create_date=timezone.now())
@@ -48,21 +50,25 @@ def answer_create(request, question_id):
 		form = AnswerForm(request.POST)
 		if form.is_valid():
 			answer = form.save(commit=False)
+			answer.author = request.user  # author 속성에 로그인 계정 저장
 			answer.create_date = timezone.now()
 			answer.question = question
 			answer.save()
 			return redirect('pybo:detail', question_id=question.id)
 	else:
-		return HttpResponseNotAllowed('Only POST is possible.')
+		form = AnswerForm()
+		# return HttpResponseNotAllowed('Only POST is possible.')
 	context = {'question': question, 'form': form}
 	return render(request, 'pybo/question_detail.html', context)
 
 
+@login_required(login_url='common:login')
 def question_create(request):
 	if request.method == 'POST':
 		form = QuestionForm(request.POST)
 		if form.is_valid():  # 폼이 유효하다면
 			question = form.save(commit=False)  # 임시저장하여 question객체를 리턴받는다?
+			question.author = request.user
 			question.create_date = timezone.now()  # 실제 저장을 위해 작성일시 생성
 			question.save()  # 실제 저장
 			return redirect('pybo:index')
