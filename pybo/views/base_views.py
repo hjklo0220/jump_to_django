@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
-# from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView
 
 from ..models import Question
 
@@ -25,10 +25,10 @@ def detail(request, question_id):
 
 
 
-# class IndexView(ListView):
-# 	# template_name = question_list.html # 디폴트: 모델명_list.html
-# 	def get_queryset(self):
-# 		return Question.objects.order_by('-create_date')
+class IndexView(ListView):
+	# template_name = question_list.html # 디폴트: 모델명_list.html
+	def get_queryset(self):
+		return Question.objects.order_by('-create_date')
 
 
 # class DetailView(DetailView):
