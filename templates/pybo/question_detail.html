@@ -62,6 +62,11 @@
                     </div>
                 </div>
                 <div class="my-3">
+                    <a href="javascript:void(0)" class="recommend btn btn-sm btn-outline-success"
+                       data-uri="{% url 'pybo:answer_vote' answer.id %}">
+                        추천
+                        <span class="badge rounded-pill bg-primary">{{ answer.voter.count }}</span>
+                    </a>
                     {% if request.user == answer.author %}
                         <a href="{% url 'pybo:answer_modify' answer.id %}"
                            class="btn btn-sm btn-outline-info">수정</a>
