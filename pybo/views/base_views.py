@@ -4,10 +4,15 @@ from django.db.models import Q
 # from django.views.generic import ListView, DetailView
 
 from ..models import Question
+import logging
+
+
+# 로거 객체 생성
+logger = logging.getLogger('pybo')
 
 
 def index(request):
-	3/0 # 로깅 테스트
+	logger.info("INFO 레벨로 출력")
 	page = request.GET.get('page', '1')  # 페이지 http://localhost:8000/pybo/?page=1 디폴트 1
 	question_list = Question.objects.order_by('-create_date')
 	kw = request.GET.get('kw', '')  # 검색어
