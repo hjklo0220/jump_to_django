@@ -7,6 +7,7 @@ from ..models import Question
 
 
 def index(request):
+	3/0 # 로깅 테스트
 	page = request.GET.get('page', '1')  # 페이지 http://localhost:8000/pybo/?page=1 디폴트 1
 	question_list = Question.objects.order_by('-create_date')
 	kw = request.GET.get('kw', '')  # 검색어
